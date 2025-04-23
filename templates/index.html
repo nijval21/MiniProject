@@ -1,202 +1,926 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Web Vulnerability Scanner</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    :root {
+      /* Light theme variables */
+      --bg-primary: #f5f7fa;
+      --bg-secondary: #ffffff;
+      --text-primary: #2A2D34;
+      --text-secondary: #6B7280;
+      --primary-color: #4776E6;
+      --primary-gradient: linear-gradient(135deg, #4776E6 0%, #8E54E9 100%);
+      --danger-color: #FF416C;
+      --danger-gradient: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);
+      --success-color: #0BAB64;
+      --success-gradient: linear-gradient(135deg, #0BAB64 0%, #3BB78F 100%);
+      --border-color: #E5E7EB;
+      --box-shadow: 0 10px 30px rgba(42, 45, 52, 0.08);
+      --input-bg: #ffffff;
+      --card-bg: #ffffff;
+      --card-border: rgba(0, 0, 0, 0.05);
+      --pattern-opacity: 0.03;
+    }
+
+    [data-theme="dark"] {
+      /* Dark theme variables */
+      --bg-primary: #111827;
+      --bg-secondary: #1F2937;
+      --text-primary: #F9FAFB;
+      --text-secondary: #D1D5DB;
+      --primary-color: #6D8DFF;
+      --primary-gradient: linear-gradient(135deg, #6D8DFF 0%, #A17FFF 100%);
+      --danger-color: #FF6B8B;
+      --danger-gradient: linear-gradient(135deg, #FF6B8B 0%, #FF5E54 100%);
+      --success-color: #22C55E;
+      --success-gradient: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+      --border-color: #374151;
+      --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      --input-bg: #374151;
+      --card-bg: #1F2937;
+      --card-border: rgba(255, 255, 255, 0.05);
+      --pattern-opacity: 0.07;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #f5f5f5;
-      color: #333;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      transition: all 0.3s ease;
+      background-image:
+        radial-gradient(circle at 25px 25px, var(--primary-color) 2%, transparent 0%),
+        radial-gradient(circle at 75px 75px, var(--primary-color) 2%, transparent 0%);
+      background-size: 100px 100px;
+      background-attachment: fixed;
+      opacity: 1;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-primary);
+      opacity: 0.9;
+      z-index: -1;
     }
 
     .container {
-      background-color: white;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px;
     }
 
-    h1,
-    h2,
-    h3 {
-      color: #2c3e50;
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: var(--box-shadow);
+      padding: 40px;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+      border: 1px solid var(--card-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      opacity: 0;
+      transition: all 0.5s ease;
+      pointer-events: none;
+    }
+
+    .card:hover::after {
+      opacity: 0.1;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 60px;
+      height: 30px;
+      background: var(--primary-gradient);
+      border-radius: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 0 5px;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .theme-toggle-thumb {
+      width: 22px;
+      height: 22px;
+      background-color: white;
+      border-radius: 50%;
+      position: relative;
+      transform: translateX(0px);
+      transition: transform 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    }
+
+    [data-theme="dark"] .theme-toggle-thumb {
+      transform: translateX(30px);
+    }
+
+    .theme-toggle i {
+      font-size: 0.75rem;
+      color: var(--primary-color);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      position: relative;
+      display: inline-block;
+    }
+
+    .header h1::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 4px;
+      background: var(--primary-gradient);
+      border-radius: 2px;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 20px auto 0;
     }
 
     .form-group {
-      margin-bottom: 20px;
+      display: flex;
+      margin-bottom: 30px;
+      position: relative;
     }
 
-    input[type="text"] {
-      width: 70%;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 16px;
+    .form-control {
+      flex: 1;
+      padding: 18px 25px;
+      font-size: 1rem;
+      border: 2px solid var(--border-color);
+      border-radius: 50px 0 0 50px;
+      transition: all 0.3s ease;
+      background-color: var(--input-bg);
+      color: var(--text-primary);
     }
 
-    button {
-      background-color: #3498db;
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(71, 118, 230, 0.2);
+    }
+
+    .btn {
+      background: var(--primary-gradient);
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
+      padding: 0 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 0 50px 50px 0;
       cursor: pointer;
-      font-size: 16px;
-      transition: background-color 0.3s;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      overflow: hidden;
     }
 
-    button:hover {
-      background-color: #2980b9;
+    .btn::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: all 0.5s ease;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(71, 118, 230, 0.3);
     }
 
     .loader {
       display: none;
-      margin-top: 20px;
       text-align: center;
+      padding: 40px 0;
     }
 
-    .loader-spinner {
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #3498db;
+    .scanner {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 30px;
+      position: relative;
+    }
+
+    .scanner-beam {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--primary-gradient);
+      border-radius: 10px;
+      animation: scan 2s ease-in-out infinite;
+      box-shadow: 0 0 10px var(--primary-color);
+    }
+
+    .scanner-frame {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 3px solid var(--primary-color);
+      border-radius: 15px;
+      box-sizing: border-box;
+    }
+
+    .scanner-dots {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-content: space-between;
+      padding: 10px;
+    }
+
+    .scanner-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--primary-color);
       border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
+      opacity: 0.5;
     }
 
-    @keyframes spin {
+    @keyframes scan {
+
+      0%,
+      100% {
+        top: 0;
+      }
+
+      50% {
+        top: calc(100% - 5px);
+      }
+    }
+
+    .loader p {
+      color: var(--primary-color);
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin-top: 20px;
+      animation: pulse-text 1.5s infinite;
+    }
+
+    @keyframes pulse-text {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .results-header h2 {
+      font-size: 1.8rem;
+      margin: 0;
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .scan-url {
+      font-weight: 600;
+      color: var(--primary-color);
+      background-color: rgba(71, 118, 230, 0.1);
+      padding: 8px 20px;
+      border-radius: 50px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .scan-url i {
+      font-size: 0.9rem;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background-color: var(--border-color);
+      border-radius: 3px;
+      margin: 30px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0;
+      background: var(--success-gradient);
+      border-radius: 3px;
+      animation: progress 1.5s ease-out forwards;
+    }
+
+    @keyframes progress {
       0% {
-        transform: rotate(0deg);
+        width: 0;
       }
 
       100% {
-        transform: rotate(360deg);
+        width: 100%;
       }
     }
 
-    .results {
-      margin-top: 30px;
+    .stages {
+      display: flex;
+      margin: 40px 0;
+      justify-content: space-between;
+      position: relative;
     }
 
-    .result-item {
-      margin-bottom: 10px;
+    .stages::before {
+      content: "";
+      position: absolute;
+      top: 35px;
+      left: 45px;
+      right: 45px;
+      height: 4px;
+      background-color: var(--border-color);
+      z-index: 1;
+    }
+
+    .stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 33.333%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .stage-icon {
+      background: var(--success-gradient);
+      color: white;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      box-shadow: 0 5px 15px rgba(11, 171, 100, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stage-icon::before {
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      width: calc(100% + 20px);
+      height: calc(100% + 20px);
+      background: var(--success-gradient);
+      opacity: 0.3;
+      border-radius: 50%;
+      animation: pulse-ring 2s infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.3;
+      }
+
+      50% {
+        opacity: 0.1;
+      }
+
+      100% {
+        transform: scale(1.1);
+        opacity: 0;
+      }
+    }
+
+    .stage-text {
+      font-weight: 500;
+      text-align: center;
+      color: var(--text-primary);
+      margin-top: 10px;
+      font-size: 1rem;
+    }
+
+    .vulnerability-list {
+      margin-top: 50px;
+    }
+
+    .vulnerability-list h3 {
+      font-size: 1.5rem;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .vulnerability-list h3 i {
+      color: var(--danger-color);
+    }
+
+    .vuln-item {
+      margin-bottom: 20px;
+      animation: fadeInUp 0.5s forwards;
+      opacity: 0;
+    }
+
+    .vuln-item:nth-child(1) {
+      animation-delay: 0.1s;
+    }
+
+    .vuln-item:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .vuln-item:nth-child(3) {
+      animation-delay: 0.3s;
+    }
+
+    .vuln-item:nth-child(4) {
+      animation-delay: 0.4s;
+    }
+
+    .vuln-item:nth-child(5) {
+      animation-delay: 0.5s;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     .collapsible {
-      background-color: #f1f1f1;
-      color: #444;
+      background: var(--card-bg);
+      color: var(--text-primary);
       cursor: pointer;
-      padding: 18px;
+      padding: 20px 25px;
       width: 100%;
       border: none;
+      border-radius: 12px;
       text-align: left;
       outline: none;
-      font-size: 15px;
-      border-radius: 4px;
-      transition: 0.4s;
+      font-size: 1.05rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+      border-left: 4px solid var(--danger-color);
+      position: relative;
+      overflow: hidden;
     }
 
-    .active,
-    .collapsible:hover {
-      background-color: #e1e1e1;
+    .collapsible::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--danger-gradient);
+      transform: scaleY(1);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+
+    .collapsible:hover::before,
+    .collapsible.active::before {
+      transform: scaleY(3);
+    }
+
+    .collapsible:hover,
+    .collapsible.active {
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .collapsible-icon {
+      background: var(--danger-gradient);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .active .collapsible-icon {
+      transform: rotate(180deg);
     }
 
     .content {
-      padding: 0 18px;
       max-height: 0;
       overflow: hidden;
-      transition: max-height 0.2s ease-out;
-      background-color: white;
-      border-radius: 0 0 4px 4px;
+      transition: max-height 0.5s ease-out;
+      background-color: var(--bg-secondary);
+      border-radius: 0 0 12px 12px;
+      margin-top: -5px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
     }
 
-    .step-item {
-      padding: 10px;
-      margin-bottom: 5px;
-      border-radius: 4px;
-      background-color: #f8f9fa;
+    .mitigation {
+      padding: 30px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
     }
 
-    .vulnerability {
-      background-color: #e74c3c;
-      color: white;
-      padding: 10px;
-      margin-bottom: 5px;
-      border-radius: 4px;
+    .content.open .mitigation {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .processing-step {
-      background-color: #2ecc71;
-      color: white;
+    .mitigation h4 {
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mitigation h4 i {
+      color: var(--success-color);
+    }
+
+    .mitigation p {
+      margin-bottom: 20px;
+      color: var(--text-secondary);
+      line-height: 1.8;
+    }
+
+    .mitigation-list {
+      list-style-type: none;
+    }
+
+    .mitigation-list li {
+      padding: 16px 20px;
+      background-color: var(--card-bg);
+      margin-bottom: 12px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      transform-origin: left;
+    }
+
+    .mitigation-list li:hover {
+      transform: translateX(5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .mitigation-list li i {
+      color: var(--success-color);
+      margin-right: 15px;
+      font-size: 1.1rem;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px 0;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+      opacity: 0.8;
+    }
+
+    .footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .form-group {
+        flex-direction: column;
+      }
+
+      .form-control,
+      .btn {
+        width: 100%;
+        border-radius: 50px;
+      }
+
+      .btn {
+        margin-top: 15px;
+        padding: 15px;
+        justify-content: center;
+      }
+
+      .stages {
+        flex-direction: column;
+      }
+
+      .stages::before {
+        display: none;
+      }
+
+      .stage {
+        width: 100%;
+        flex-direction: row;
+        margin-bottom: 20px;
+        gap: 15px;
+      }
+
+      .stage-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+        margin-bottom: 0;
+      }
+
+      .theme-toggle {
+        top: 10px;
+        right: 10px;
+      }
+    }
+
+    /* Animation for mode switch */
+    @keyframes fadeMode {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+
+    html.color-theme-in-transition,
+    html.color-theme-in-transition *,
+    html.color-theme-in-transition *:before,
+    html.color-theme-in-transition *:after {
+      transition: all 750ms !important;
+      transition-delay: 0 !important;
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>Web Vulnerability Scanner</h1>
-    <p>Enter a URL to scan for potential security vulnerabilities using our LLM-powered analysis.</p>
-
-    <div class="form-group">
-      <form id="scanForm" method="POST" action="/scan">
-        <input type="text" name="url" placeholder="https://example.com" required>
-        <button type="submit">Scan URL</button>
-      </form>
+  <div class="theme-toggle" id="themeToggle">
+    <div class="theme-toggle-thumb">
+      <i class="fas fa-sun"></i>
     </div>
+  </div>
 
-    <div class="loader" id="loadingSpinner">
-      <div class="loader-spinner"></div>
-      <p>Analyzing website for vulnerabilities...</p>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <h1>Web Vulnerability Scanner</h1>
+        <p>Detect security vulnerabilities in web applications using our advanced AI-powered analysis system</p>
+      </div>
+
+      <form id="scanForm" method="POST" action="/scan">
+        <div class="form-group">
+          <input type="text" name="url" class="form-control" placeholder="Enter website URL (e.g., https://example.com)"
+            required>
+          <button type="submit" class="btn">
+            <i class="fas fa-shield-alt"></i>
+            Scan Website
+          </button>
+        </div>
+      </form>
+
+      <div class="loader" id="loadingSpinner">
+        <div class="scanner">
+          <div class="scanner-frame"></div>
+          <div class="scanner-beam"></div>
+          <div class="scanner-dots">
+            <div class="scanner-dot"></div>
+            <div class="scanner-dot"></div>
+            <div class="scanner-dot"></div>
+            <div class="scanner-dot"></div>
+            <div class="scanner-dot"></div>
+            <div class="scanner-dot"></div>
+            <div class="scanner-dot"></div>
+            <div class="scanner-dot"></div>
+            <div class="scanner-dot"></div>
+          </div>
+        </div>
+        <p>Analyzing website security vulnerabilities...</p>
+      </div>
     </div>
 
     {% if steps %}
-    <div class="results">
-      <h3>Scan Results for: {{ url }}</h3>
-
-      <div class="processing-steps">
-        {% for step in steps[:3] %}
-        <div class="step-item processing-step">{{ step }}</div>
-        {% endfor %}
+    <div class="card">
+      <div class="results-header">
+        <h2>Scan Results</h2>
+        <span class="scan-url">
+          <i class="fas fa-link"></i>
+          {{ url }}
+        </span>
       </div>
 
-      <h3>Detected Vulnerabilities:</h3>
-      {% for step in steps[3:] %}
-      <div class="result-item">
-        <button type="button" class="collapsible">
-          {{ step }}
-          <span>+</span>
-        </button>
-        <div class="content">
-          <div class="mitigation">
-            <h4>Mitigation Techniques:</h4>
-            <p>This vulnerability could potentially expose sensitive data or allow unauthorized access to your system.
-              Here are some recommended mitigation steps:</p>
-            <ul>
-              <li>Validate all user input and implement proper sanitization</li>
-              <li>Apply the principle of least privilege for all system components</li>
-              <li>Keep all software and dependencies updated to the latest secure versions</li>
-              <li>Implement proper authentication and session management</li>
-              <li>Consider adding a web application firewall for additional protection</li>
-            </ul>
+      <div class="progress-bar"></div>
+
+      <div class="stages">
+        <div class="stage">
+          <div class="stage-icon">
+            <i class="fas fa-spider"></i>
           </div>
+          <div class="stage-text">{{ steps[0] }}</div>
+        </div>
+        <div class="stage">
+          <div class="stage-icon">
+            <i class="fas fa-cogs"></i>
+          </div>
+          <div class="stage-text">{{ steps[1] }}</div>
+        </div>
+        <div class="stage">
+          <div class="stage-icon">
+            <i class="fas fa-brain"></i>
+          </div>
+          <div class="stage-text">{{ steps[2] }}</div>
         </div>
       </div>
-      {% endfor %}
+
+      <div class="vulnerability-list">
+        <h3><i class="fas fa-exclamation-triangle"></i> Detected Vulnerabilities</h3>
+
+        {% for step in steps[3:] %}
+        <div class="vuln-item">
+          <button type="button" class="collapsible">
+            {{ step }}
+            <div class="collapsible-icon">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </button>
+          <div class="content">
+            <div class="mitigation">
+              <h4><i class="fas fa-shield-alt"></i> Risk Assessment & Mitigation</h4>
+              <p>This vulnerability could potentially compromise your application's security and expose sensitive data.
+                Here are recommended steps to address this issue:</p>
+              <ul class="mitigation-list">
+                <li><i class="fas fa-check-circle"></i> Implement proper input validation and sanitization to prevent
+                  injection attacks</li>
+                <li><i class="fas fa-check-circle"></i> Apply the principle of least privilege for system components and
+                  database accounts</li>
+                <li><i class="fas fa-check-circle"></i> Use parameterized queries or prepared statements to prevent SQL
+                  injection</li>
+                <li><i class="fas fa-check-circle"></i> Keep all frameworks, libraries and dependencies updated to the
+                  latest secure versions</li>
+                <li><i class="fas fa-check-circle"></i> Consider implementing a Web Application Firewall (WAF) as an
+                  additional security layer</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
     </div>
     {% endif %}
+
+    <div class="footer">
+      <p>© 2025 Web Vulnerability Scanner | Advanced Security Analysis</p>
+    </div>
   </div>
 
   <script>
+    // Theme toggling functionality
+    const themeToggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const themeToggleThumb = document.querySelector('.theme-toggle-thumb');
+    const sunIcon = '<i class="fas fa-sun"></i>';
+    const moonIcon = '<i class="fas fa-moon"></i>';
+
+    // Check for saved theme preference or use preferred color scheme
+    const savedTheme = localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    // Set initial theme
+    html.setAttribute('data-theme', savedTheme);
+    themeToggleThumb.innerHTML = savedTheme === 'dark' ? moonIcon : sunIcon;
+
+    // Handle theme toggle click
+    themeToggle.addEventListener('click', () => {
+      // Add transition class
+      html.classList.add('color-theme-in-transition');
+
+      // Toggle theme
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+      html.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+
+      // Update icon
+      themeToggleThumb.innerHTML = newTheme === 'dark' ? moonIcon : sunIcon;
+
+      // Remove transition class
+      setTimeout(() => {
+        html.classList.remove('color-theme-in-transition');
+      }, 1000);
+    });
+
     // Show loading spinner when form is submitted
     document.getElementById("scanForm").addEventListener("submit", function () {
       document.getElementById("loadingSpinner").style.display = "block";
@@ -208,14 +932,17 @@
       coll[i].addEventListener("click", function () {
         this.classList.toggle("active");
         var content = this.nextElementSibling;
-        var plusMinus = this.querySelector("span");
 
         if (content.style.maxHeight) {
           content.style.maxHeight = null;
-          plusMinus.textContent = "+";
+          content.classList.remove("open");
         } else {
           content.style.maxHeight = content.scrollHeight + "px";
-          plusMinus.textContent = "-";
+
+          // Add a slight delay before adding the open class to trigger the animation
+          setTimeout(() => {
+            content.classList.add("open");
+          }, 300);
         }
       });
     }
