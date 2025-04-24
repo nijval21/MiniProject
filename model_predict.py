@@ -181,19 +181,19 @@ def run_model(preprocessed_data):
     # Analyze using Groq
     results = analyze_with_groq(preprocessed_data)
     
-    # Format results for the front-end
+    # Get complete vulnerability objects
     vulnerabilities = results.get('vulnerabilities', [])
     if not vulnerabilities:
         if 'error' in results:
-            return ["Error: " + results['error']]
-        return ["No vulnerabilities detected"]
+            return [], "Error: " + results['error']
+        return [], "No vulnerabilities detected"
     
-    # Return formatted results
+    # Return both formatted results for backward compatibility and full vulnerability objects
     formatted_results = []
     for vuln in vulnerabilities:
         severity = vuln.get('severity', 'Unknown')
         name = vuln.get('name', 'Unknown vulnerability')
         formatted_results.append(f"{severity}: {name}")
     
-    # Complete results will be passed to the template
-    return formatted_results
+    # Return both the formatted strings and the complete vulnerability objects
+    return formatted_results, vulnerabilities

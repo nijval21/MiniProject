@@ -30,45 +30,50 @@ def scan():
         
         # Step 3: Model - Analyze for vulnerabilities
         logs.append("Analyzing vulnerabilities...")
-        vulnerability_names = run_model(preprocessed_data)
+        vulnerability_names, detailed_vulnerabilities = run_model(preprocessed_data)
         logs.append("Analysis completed")
         
-        # Parse the raw vulnerabilities
-        try:
-            detailed_vulnerabilities = []
-            structured_data = preprocessed_data.get('structured_data', {})
-            
-            # Load full vulnerability data
-            vuln_data_path = os.path.join(os.path.dirname(__file__), 'vuln_data.json')
-            with open(vuln_data_path, 'r') as f:
-                vuln_details = json.load(f)
-                
-            # Process each detected vulnerability
-            for vuln_name in vulnerability_names:
-                severity, name = "Medium", vuln_name
-                if ":" in vuln_name:
-                    parts = vuln_name.split(":", 1)
-                    severity = parts[0].strip()
-                    name = parts[1].strip() if len(parts) > 1 else parts[0].strip()
-                
-                # Find matching vulnerability in our database
-                vuln_info = next((v for v in vuln_details if v["name"].lower() == name.lower()), None)
-                if vuln_info:
-                    detailed_vulnerabilities.append(vuln_info)
-                else:
-                    detailed_vulnerabilities.append({
-                        "name": name,
-                        "severity": severity,
-                        "description": f"Detected {name} vulnerability",
-                        "impact": "Could potentially impact security",
-                        "mitigation": "Follow security best practices"
-                    })
-                    
+        # If we have detailed vulnerabilities from the model, use them directly
+        if detailed_vulnerabilities:
             vulnerabilities = detailed_vulnerabilities
-            
-        except Exception as e:
-            vulnerabilities = [{"name": name, "severity": "Unknown", "description": name} for name in vulnerability_names]
-            
+        else:
+            # Fall back to the previous approach using vuln_data.json
+            try:
+                detailed_vulnerabilities = []
+                
+                # Load full vulnerability data
+                vuln_data_path = os.path.join(os.path.dirname(__file__), 'vuln_data.json')
+                with open(vuln_data_path, 'r') as f:
+                    vuln_details = json.load(f)
+                    
+                # Process each detected vulnerability
+                for vuln_name in vulnerability_names:
+                    severity, name = "Medium", vuln_name
+                    if ":" in vuln_name:
+                        parts = vuln_name.split(":", 1)
+                        severity = parts[0].strip()
+                        name = parts[1].strip() if len(parts) > 1 else parts[0].strip()
+                    
+                    # Find matching vulnerability in our database
+                    vuln_info = next((v for v in vuln_details if v["name"].lower() == name.lower()), None)
+                    if vuln_info:
+                        detailed_vulnerabilities.append(vuln_info)
+                    else:
+                        detailed_vulnerabilities.append({
+                            "name": name,
+                            "severity": severity,
+                            "description": f"Detected {name} vulnerability",
+                            "impact": "Could potentially impact security",
+                            "mitigation": "Follow security best practices"
+                        })
+                        
+                vulnerabilities = detailed_vulnerabilities
+                
+            except Exception as e:
+                vulnerabilities = [{"name": name, "severity": "Unknown", "description": name, 
+                                   "impact": "Impact unknown", "mitigation": "Mitigation unknown"} 
+                                  for name in vulnerability_names]
+                
         return render_template('index.html', 
                               steps=logs, 
                               url=url, 
@@ -91,11 +96,11 @@ def api_scan():
         # Run the scanning process
         crawled_data = run_crawler(url)
         preprocessed_data = run_preprocessing(crawled_data)
-        vulnerability_names = run_model(preprocessed_data)
+        vulnerability_names, detailed_vulnerabilities = run_model(preprocessed_data)
         
         return jsonify({
             "url": url,
-            "vulnerabilities": vulnerability_names,
+            "vulnerabilities": detailed_vulnerabilities if detailed_vulnerabilities else vulnerability_names,
             "raw_data": preprocessed_data.get('structured_data', {})
         })
     except Exception as e:
