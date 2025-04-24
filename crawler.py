@@ -1,16 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
-import time
 import json
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
-from webdriver_manager.chrome import ChromeDriverManager
 
-def fetch_url(url, use_selenium=False):
-    """Fetch URL content using either requests or selenium"""
+def fetch_url(url):
+    """Fetch URL content using only requests"""
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -22,37 +16,12 @@ def fetch_url(url, use_selenium=False):
         'Cache-Control': 'no-cache',
     }
     
-    if use_selenium:
-        # Setup Selenium WebDriver
-        options = Options()
-        options.add_argument("--headless")
-        options.add_argument("--disable-gpu")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-        
-        try:
-            driver.get(url)
-            time.sleep(3)  # Wait for page to load
-            html_content = driver.page_source
-            
-            # Get response headers through a separate request
-            response = requests.get(url, headers=headers)
-            response_headers = dict(response.headers)
-            
-            driver.quit()
-            return html_content, response_headers
-        except Exception as e:
-            print(f"Error with Selenium: {e}")
-            driver.quit()
-            return None, None
-    else:
-        try:
-            response = requests.get(url, headers=headers, timeout=10)
-            return response.text, dict(response.headers)
-        except Exception as e:
-            print(f"Error with requests: {e}")
-            return None, None
+    try:
+        response = requests.get(url, headers=headers, timeout=10)
+        return response.text, dict(response.headers)
+    except Exception as e:
+        print(f"Error with requests: {e}")
+        return None, None
 
 def extract_links(soup, base_url):
     """Extract links from soup object"""
@@ -157,7 +126,7 @@ def run_crawler(url):
     }
     
     # Fetch the main URL
-    html_content, headers = fetch_url(url, use_selenium=True)
+    html_content, headers = fetch_url(url)
     
     if html_content and headers:
         # Parse HTML

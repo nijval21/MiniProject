@@ -1,7 +1,6 @@
-import groq
+from groq import Groq
 import os
 import json
-import time
 
 # Replace with your actual Groq API key
 GROQ_API_KEY = os.environ.get('GROQ_API_KEY', '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')
@@ -9,7 +8,7 @@ GROQ_API_KEY = os.environ.get('GROQ_API_KEY', 'gsk_Lt9v0wB5wlzFvhCvxKrCWGdyb3FYv
 def get_groq_client():
     """Initialize and return a Groq client"""
     try:
-        client = groq.Client(api_key=GROQ_API_KEY)
+        client = Groq(api_key=GROQ_API_KEY)
         return client
     except Exception as e:
         print(f"Error initializing Groq client: {e}")
