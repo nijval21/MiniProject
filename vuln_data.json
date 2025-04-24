@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Missing Content-Security-Policy",
+    "severity": "High",
+    "description": "The Content-Security-Policy header is missing, which increases the risk of XSS attacks.",
+    "impact": "Attackers can inject and execute malicious scripts on your website, potentially stealing user data or performing actions on behalf of your users.",
+    "mitigation": "Implement a Content-Security-Policy header with appropriate directives that restrict which resources can be loaded and executed on your website."
+  },
+  {
+    "name": "Missing X-Frame-Options",
+    "severity": "Medium",
+    "description": "The X-Frame-Options header is missing, which increases the risk of clickjacking attacks.",
+    "impact": "Attackers can embed your website in an iframe and trick users into clicking on elements they didn't intend to.",
+    "mitigation": "Add the X-Frame-Options header with a value of 'DENY' or 'SAMEORIGIN' to prevent your website from being embedded in frames on other sites."
+  },
+  {
+    "name": "Missing X-Content-Type-Options",
+    "severity": "Medium",
+    "description": "The X-Content-Type-Options header is missing, which can lead to MIME type sniffing attacks.",
+    "impact": "Browsers might interpret files as a different content-type than what was specified, potentially executing malicious code.",
+    "mitigation": "Add the X-Content-Type-Options header with the value 'nosniff' to prevent browsers from MIME-sniffing content."
+  },
+  {
+    "name": "Missing Strict-Transport-Security",
+    "severity": "High",
+    "description": "The HTTP Strict Transport Security (HSTS) header is missing, allowing potential downgrade attacks.",
+    "impact": "Attackers could intercept and modify traffic by downgrading HTTPS connections to HTTP.",
+    "mitigation": "Implement the Strict-Transport-Security header with an appropriate max-age value to force browsers to use HTTPS."
+  },
+  {
+    "name": "Missing X-XSS-Protection",
+    "severity": "Medium",
+    "description": "The X-XSS-Protection header is missing, which would help prevent XSS in older browsers.",
+    "impact": "Older browsers might not have built-in XSS filters enabled, making your users more vulnerable to cross-site scripting attacks.",
+    "mitigation": "Add the X-XSS-Protection header with a value of '1; mode=block' to enable XSS filtering in older browsers."
+  },
+  {
+    "name": "Missing Referrer-Policy",
+    "severity": "Low",
+    "description": "The Referrer-Policy header is missing, which controls how much referrer information is sent when following links.",
+    "impact": "Sensitive information might be leaked in the Referer header when users navigate away from your site.",
+    "mitigation": "Add a Referrer-Policy header with an appropriate value like 'no-referrer' or 'same-origin' to control referrer information."
+  },
+  {
+    "name": "Information Leakage",
+    "severity": "Medium",
+    "description": "Headers like Server or X-Powered-By reveal too much information about your technology stack.",
+    "impact": "Attackers can use this information to target known vulnerabilities in the specific software versions you're using.",
+    "mitigation": "Configure your server to remove or obscure headers that reveal technology information."
+  },
+  {
+    "name": "Insecure Form Handling",
+    "severity": "Medium",
+    "description": "Forms using GET method or missing proper action attributes may expose sensitive data.",
+    "impact": "User input might be exposed in URL parameters or sent to unintended locations.",
+    "mitigation": "Use POST method for forms, especially those handling sensitive data. Ensure all forms have appropriate action attributes."
+  },
+  {
+    "name": "Missing HTTPS",
+    "severity": "High",
+    "description": "The site does not enforce HTTPS connections.",
+    "impact": "Data transmitted between users and the website could be intercepted and read by attackers.",
+    "mitigation": "Implement HTTPS across your entire site and use HSTS headers to prevent downgrade attacks."
+  },
+  {
+    "name": "Insecure Cookies",
+    "severity": "Medium",
+    "description": "Cookies are missing security attributes like Secure, HttpOnly, or SameSite.",
+    "impact": "Cookies might be accessible via JavaScript (if HttpOnly is missing), sent over insecure connections (if Secure is missing), or vulnerable to CSRF attacks (if SameSite is missing).",
+    "mitigation": "Set the Secure, HttpOnly, and SameSite attributes on cookies that contain sensitive information."
+  },
+  {
+    "name": "Missing Permissions-Policy",
+    "severity": "Low",
+    "description": "The Permissions-Policy header is missing, which helps control browser features.",
+    "impact": "Website might unintentionally allow access to sensitive browser features like geolocation, camera, or microphone.",
+    "mitigation": "Implement a Permissions-Policy header to explicitly define which browser features your website needs."
+  },
+  {
+    "name": "Missing Subresource Integrity",
+    "severity": "Medium",
+    "description": "External scripts and stylesheets lack integrity attributes.",
+    "impact": "If a CDN or external resource is compromised, attackers could inject malicious code that would be executed by your users.",
+    "mitigation": "Add integrity attributes with cryptographic hashes to script and link tags for external resources."
+  }
+]
