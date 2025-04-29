@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 from crawler import run_crawler
 from preprocessing import run_preprocessing
 from model_predict import run_model
+from zap_integration import run_zap_scan
 import json
 import os
 
@@ -16,6 +17,7 @@ def scan():
     url = request.form['url']
     logs = []
     vulnerabilities = []
+    headers = {}
     
     try:
         # Step 1: Crawler - Get web page data
@@ -33,13 +35,23 @@ def scan():
         vulnerability_names, detailed_vulnerabilities = run_model(preprocessed_data)
         logs.append("Analysis completed")
         
+        # Step 4: Run OWASP ZAP scan
+        logs.append("Running OWASP ZAP scan...")
+        zap_results = run_zap_scan(url)
+        logs.append("ZAP scan completed")
+        
+        # Extract ZAP results
+        headers = zap_results.get('headers', {})
+        zap_vulnerabilities = zap_results.get('vulnerabilities', [])
+        
         # If we have detailed vulnerabilities from the model, use them directly
+        model_vulnerabilities = []
         if detailed_vulnerabilities:
-            vulnerabilities = detailed_vulnerabilities
+            model_vulnerabilities = detailed_vulnerabilities
         else:
             # Fall back to the previous approach using vuln_data.json
             try:
-                detailed_vulnerabilities = []
+                detailed_model_vulnerabilities = []
                 
                 # Load full vulnerability data
                 vuln_data_path = os.path.join(os.path.dirname(__file__), 'vuln_data.json')
@@ -57,27 +69,38 @@ def scan():
                     # Find matching vulnerability in our database
                     vuln_info = next((v for v in vuln_details if v["name"].lower() == name.lower()), None)
                     if vuln_info:
-                        detailed_vulnerabilities.append(vuln_info)
+                        detailed_model_vulnerabilities.append(vuln_info)
                     else:
-                        detailed_vulnerabilities.append({
+                        detailed_model_vulnerabilities.append({
                             "name": name,
                             "severity": severity,
                             "description": f"Detected {name} vulnerability",
                             "impact": "Could potentially impact security",
-                            "mitigation": "Follow security best practices"
+                            "mitigation": "Follow security best practices",
+                            "source": "AI Model"
                         })
                         
-                vulnerabilities = detailed_vulnerabilities
+                model_vulnerabilities = detailed_model_vulnerabilities
                 
             except Exception as e:
-                vulnerabilities = [{"name": name, "severity": "Unknown", "description": name, 
-                                   "impact": "Impact unknown", "mitigation": "Mitigation unknown"} 
+                model_vulnerabilities = [{"name": name, "severity": "Unknown", "description": name, 
+                                   "impact": "Impact unknown", "mitigation": "Mitigation unknown",
+                                   "source": "AI Model"} 
                                   for name in vulnerability_names]
+        
+        # Combine vulnerabilities from both sources
+        for vuln in model_vulnerabilities:
+            if "source" not in vuln:
+                vuln["source"] = "AI Model"
+        
+        # Combine all vulnerabilities
+        vulnerabilities = model_vulnerabilities + zap_vulnerabilities
                 
         return render_template('index.html', 
                               steps=logs, 
                               url=url, 
-                              vulnerabilities=vulnerabilities)
+                              vulnerabilities=vulnerabilities,
+                              headers=headers)
                               
     except Exception as e:
         logs.append(f"Error: {str(e)}")
@@ -98,9 +121,35 @@ def api_scan():
         preprocessed_data = run_preprocessing(crawled_data)
         vulnerability_names, detailed_vulnerabilities = run_model(preprocessed_data)
         
+        # Run OWASP ZAP scan for additional vulnerabilities
+        zap_results = run_zap_scan(url)
+        zap_vulnerabilities = zap_results.get('vulnerabilities', [])
+        headers = zap_results.get('headers', {})
+        
+        # Add source to model vulnerabilities if not present
+        if detailed_vulnerabilities:
+            for vuln in detailed_vulnerabilities:
+                if "source" not in vuln:
+                    vuln["source"] = "AI Model"
+            all_vulnerabilities = detailed_vulnerabilities + zap_vulnerabilities
+        else:
+            # Format basic vulnerability names with source info
+            model_vulnerabilities = [
+                {
+                    "name": name,
+                    "severity": "Medium",
+                    "description": f"Detected {name} vulnerability",
+                    "impact": "Could potentially impact security",
+                    "mitigation": "Follow security best practices",
+                    "source": "AI Model"
+                } for name in vulnerability_names
+            ]
+            all_vulnerabilities = model_vulnerabilities + zap_vulnerabilities
+        
         return jsonify({
             "url": url,
-            "vulnerabilities": detailed_vulnerabilities if detailed_vulnerabilities else vulnerability_names,
+            "vulnerabilities": all_vulnerabilities,
+            "headers": headers,
             "raw_data": preprocessed_data.get('structured_data', {})
         })
     except Exception as e:

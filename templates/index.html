@@ -871,6 +871,138 @@
       color: var(--success-color);
     }
 
+    /* No vulnerabilities message */
+    .no-vulnerabilities {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 0;
+    }
+
+    .no-vulnerabilities i {
+      font-size: 3rem;
+      color: var(--success-color);
+      margin-bottom: 20px;
+    }
+
+    .no-vulnerabilities p {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--success-color);
+    }
+    
+    /* Source badge styles */
+    .source-badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-left: 10px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+    }
+    
+    .source-ai-model {
+      background-color: rgba(71, 118, 230, 0.1);
+      color: var(--primary-color);
+      border-color: rgba(71, 118, 230, 0.2);
+    }
+    
+    .source-owasp-zap {
+      background-color: rgba(22, 163, 74, 0.1);
+      color: var(--success-color);
+      border-color: rgba(22, 163, 74, 0.2);
+    }
+    
+    /* Headers section styles */
+    .headers-section {
+      margin: 40px 0;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .headers-section h3 {
+      font-size: 1.5rem;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .headers-section h3 i {
+      color: var(--primary-color);
+    }
+    
+    .headers-container {
+      max-height: 300px;
+      overflow-y: auto;
+      background-color: var(--bg-secondary);
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      padding: 15px;
+    }
+    
+    .header-item {
+      display: flex;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    
+    .header-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    
+    .header-name {
+      font-weight: 600;
+      min-width: 200px;
+      color: var(--primary-color);
+    }
+    
+    .header-value {
+      flex: 1;
+      word-break: break-all;
+    }
+    
+    /* Confidence section */
+    .confidence-section {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: rgba(71, 118, 230, 0.1);
+      border-radius: 10px;
+    }
+    
+    .confidence-section h4 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+    .stages::before {
+      content: "";
+      position: absolute;
+      top: 35px;
+      left: 45px;
+      right: 45px;
+      height: 4px;
+      background-color: var(--border-color);
+      z-index: 1;
+    }
+
+    .stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 25%;
+      position: relative;
+      z-index: 2;
+    }
+    /* Keep all original CSS as well */
     /* Keep all original CSS as well */
   </style>
 </head>
@@ -951,11 +1083,31 @@
           </div>
           <div class="stage-text">{{ steps[2] }}</div>
         </div>
+        <div class="stage">
+          <div class="stage-icon">
+            <i class="fas fa-shield-virus"></i>
+          </div>
+          <div class="stage-text">{{ steps[3] }}</div>
+        </div>
       </div>
-
+      {% if headers %}
+      <div class="headers-section">
+        <h3><i class="fas fa-code"></i> Response Headers</h3>
+        <div class="headers-container">
+          {% for header_name, header_value in headers.items() %}
+          <div class="header-item">
+            <span class="header-name">{{ header_name }}</span>
+            <span class="header-value">{{ header_value }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
       <div class="vulnerability-list">
         <h3><i class="fas fa-exclamation-triangle"></i> Detected Vulnerabilities</h3>
 
+        {% if vulnerabilities %}
+        {% for vuln in vulnerabilities %}
         {% if vulnerabilities %}
         {% for vuln in vulnerabilities %}
         <div class="vuln-item">
@@ -963,6 +1115,9 @@
             <span>
               <span class="severity-badge severity-{{ vuln.severity|lower }}">{{ vuln.severity }}</span>
               {{ vuln.name }}
+              {% if vuln.source %}
+              <span class="source-badge source-{{ vuln.source|lower|replace(' ', '-') }}">{{ vuln.source }}</span>
+              {% endif %}
             </span>
             <div class="collapsible-icon">
               <i class="fas fa-chevron-down"></i>
@@ -971,19 +1126,25 @@
           <div class="content">
             <div class="mitigation">
               <p>{{ vuln.description }}</p>
-
+        
               <div class="impact-section">
                 <h4><i class="fas fa-exclamation-circle"></i> Impact</h4>
                 <p>{{ vuln.impact }}</p>
               </div>
-
+        
               <h4><i class="fas fa-shield-alt"></i> Mitigation</h4>
               <p>{{ vuln.mitigation }}</p>
+        
+              {% if vuln.confidence %}
+              <div class="confidence-section">
+                <h4><i class="fas fa-chart-bar"></i> Confidence</h4>
+                <p>{{ vuln.confidence }}</p>
+              </div>
+              {% endif %}
             </div>
           </div>
         </div>
         {% endfor %}
-        {% else %}
         <div class="no-vulnerabilities">
           <i class="fas fa-check-circle"></i>
           <p>No vulnerabilities detected!</p>
