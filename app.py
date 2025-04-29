@@ -43,7 +43,7 @@ def scan():
         # Extract ZAP results
         headers = zap_results.get('headers', {})
         zap_vulnerabilities = zap_results.get('vulnerabilities', [])
-        
+        # print(zap_vulnerabilities)
         # If we have detailed vulnerabilities from the model, use them directly
         model_vulnerabilities = []
         if detailed_vulnerabilities:
@@ -125,7 +125,7 @@ def api_scan():
         zap_results = run_zap_scan(url)
         zap_vulnerabilities = zap_results.get('vulnerabilities', [])
         headers = zap_results.get('headers', {})
-        
+        # logs.append("ZAP scan completed---------------------")
         # Add source to model vulnerabilities if not present
         if detailed_vulnerabilities:
             for vuln in detailed_vulnerabilities:

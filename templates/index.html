@@ -1002,6 +1002,92 @@
       position: relative;
       z-index: 2;
     }
+    /* Section dividers */
+.vulnerability-section {
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.vulnerability-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ai-model-icon {
+  color: var(--primary-color);
+}
+
+.owasp-zap-icon {
+  color: var(--success-color);
+}
+
+.section-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 12px;
+}
+
+.section-badge-ai {
+  background-color: rgba(71, 118, 230, 0.1);
+  color: var(--primary-color);
+  border: 1px solid rgba(71, 118, 230, 0.2);
+}
+
+.section-badge-zap {
+  background-color: rgba(22, 163, 74, 0.1);
+  color: var(--success-color);
+  border: 1px solid rgba(22, 163, 74, 0.2);
+}
+
+.no-vulnerabilities-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px 0;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+/* Count badge */
+.count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  background: var(--primary-gradient);
+  color: white;
+  border-radius: 50%;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.count-badge-zap {
+  background: var(--success-gradient);
+}
     /* Keep all original CSS as well */
     /* Keep all original CSS as well */
   </style>
@@ -1064,30 +1150,31 @@
 
       <div class="progress-bar"></div>
 
+      <!-- Updated Stages Section -->
       <div class="stages">
         <div class="stage">
           <div class="stage-icon">
             <i class="fas fa-spider"></i>
           </div>
-          <div class="stage-text">{{ steps[0] }}</div>
+          <div class="stage-text">Crawling</div>
         </div>
         <div class="stage">
           <div class="stage-icon">
             <i class="fas fa-cogs"></i>
           </div>
-          <div class="stage-text">{{ steps[1] }}</div>
+          <div class="stage-text">Preprocessing</div>
         </div>
         <div class="stage">
           <div class="stage-icon">
             <i class="fas fa-brain"></i>
           </div>
-          <div class="stage-text">{{ steps[2] }}</div>
+          <div class="stage-text">AI Model Analysis</div>
         </div>
         <div class="stage">
           <div class="stage-icon">
             <i class="fas fa-shield-virus"></i>
           </div>
-          <div class="stage-text">{{ steps[3] }}</div>
+          <div class="stage-text">OWASP ZAP Scan</div>
         </div>
       </div>
       {% if headers %}
@@ -1103,48 +1190,125 @@
         </div>
       </div>
       {% endif %}
+      <!-- Main vulnerability section with the "Detected Vulnerabilities" title -->
       <div class="vulnerability-list">
         <h3><i class="fas fa-exclamation-triangle"></i> Detected Vulnerabilities</h3>
-
+      
         {% if vulnerabilities %}
-        {% for vuln in vulnerabilities %}
-        {% if vulnerabilities %}
-        {% for vuln in vulnerabilities %}
-        <div class="vuln-item">
-          <button type="button" class="collapsible {{ vuln.severity|lower }}-vuln">
-            <span>
-              <span class="severity-badge severity-{{ vuln.severity|lower }}">{{ vuln.severity }}</span>
-              {{ vuln.name }}
-              {% if vuln.source %}
-              <span class="source-badge source-{{ vuln.source|lower|replace(' ', '-') }}">{{ vuln.source }}</span>
-              {% endif %}
+        <!-- AI Model Vulnerabilities Section -->
+        <div class="vulnerability-section">
+          <div class="section-header">
+            <span class="section-title">
+              <i class="fas fa-brain ai-model-icon"></i>
+              AI Model Analysis
+              <span class="section-badge section-badge-ai">Machine Learning</span>
+              <span class="count-badge">
+                {{ vulnerabilities|selectattr('source', 'equalto', 'AI Model')|list|length }}
+              </span>
             </span>
-            <div class="collapsible-icon">
-              <i class="fas fa-chevron-down"></i>
-            </div>
-          </button>
-          <div class="content">
-            <div class="mitigation">
-              <p>{{ vuln.description }}</p>
-        
-              <div class="impact-section">
-                <h4><i class="fas fa-exclamation-circle"></i> Impact</h4>
-                <p>{{ vuln.impact }}</p>
+          </div>
+      
+          {% set ai_vulnerabilities = vulnerabilities|selectattr('source', 'equalto', 'AI Model')|list %}
+          {% if ai_vulnerabilities %}
+          {% for vuln in ai_vulnerabilities %}
+          <div class="vuln-item">
+            <button type="button" class="collapsible {{ vuln.severity|lower }}-vuln">
+              <span>
+                <span class="severity-badge severity-{{ vuln.severity|lower }}">{{ vuln.severity }}</span>
+                {{ vuln.name }}
+                <span class="source-badge source-{{ vuln.source|lower|replace(' ', '-') }}">{{ vuln.source }}</span>
+              </span>
+              <div class="collapsible-icon">
+                <i class="fas fa-chevron-down"></i>
               </div>
-        
-              <h4><i class="fas fa-shield-alt"></i> Mitigation</h4>
-              <p>{{ vuln.mitigation }}</p>
-        
-              {% if vuln.confidence %}
-              <div class="confidence-section">
-                <h4><i class="fas fa-chart-bar"></i> Confidence</h4>
-                <p>{{ vuln.confidence }}</p>
+            </button>
+            <div class="content">
+              <div class="mitigation">
+                <p>{{ vuln.description }}</p>
+      
+                <div class="impact-section">
+                  <h4><i class="fas fa-exclamation-circle"></i> Impact</h4>
+                  <p>{{ vuln.impact }}</p>
+                </div>
+      
+                <h4><i class="fas fa-shield-alt"></i> Mitigation</h4>
+                <p>{{ vuln.mitigation }}</p>
+      
+                {% if vuln.confidence %}
+                <div class="confidence-section">
+                  <h4><i class="fas fa-chart-bar"></i> Confidence</h4>
+                  <p>{{ vuln.confidence }}</p>
+                </div>
+                {% endif %}
               </div>
-              {% endif %}
             </div>
           </div>
+          {% endfor %}
+          {% else %}
+          <div class="no-vulnerabilities-section">
+            <i class="fas fa-check-circle"></i>
+            <p>No vulnerabilities detected by AI model!</p>
+          </div>
+          {% endif %}
         </div>
-        {% endfor %}
+      
+        <!-- OWASP ZAP Vulnerabilities Section -->
+        <div class="vulnerability-section">
+          <div class="section-header">
+            <span class="section-title">
+              <i class="fas fa-shield-virus owasp-zap-icon"></i>
+              OWASP ZAP Analysis
+              <span class="section-badge section-badge-zap">Dynamic Scanner</span>
+              <span class="count-badge count-badge-zap">
+                {{ vulnerabilities|selectattr('source', 'equalto', 'OWASP ZAP')|list|length }}
+              </span>
+            </span>
+          </div>
+      
+          {% set zap_vulnerabilities = vulnerabilities|selectattr('source', 'equalto', 'OWASP ZAP')|list %}
+          {% if zap_vulnerabilities %}
+          {% for vuln in zap_vulnerabilities %}
+          <div class="vuln-item">
+            <button type="button" class="collapsible {{ vuln.severity|lower }}-vuln">
+              <span>
+                <span class="severity-badge severity-{{ vuln.severity|lower }}">{{ vuln.severity }}</span>
+                {{ vuln.name }}
+                <span class="source-badge source-{{ vuln.source|lower|replace(' ', '-') }}">{{ vuln.source }}</span>
+              </span>
+              <div class="collapsible-icon">
+                <i class="fas fa-chevron-down"></i>
+              </div>
+            </button>
+            <div class="content">
+              <div class="mitigation">
+                <p>{{ vuln.description }}</p>
+      
+                <div class="impact-section">
+                  <h4><i class="fas fa-exclamation-circle"></i> Impact</h4>
+                  <p>{{ vuln.impact }}</p>
+                </div>
+      
+                <h4><i class="fas fa-shield-alt"></i> Mitigation</h4>
+                <p>{{ vuln.mitigation }}</p>
+      
+                {% if vuln.confidence %}
+                <div class="confidence-section">
+                  <h4><i class="fas fa-chart-bar"></i> Confidence</h4>
+                  <p>{{ vuln.confidence }}</p>
+                </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          {% else %}
+          <div class="no-vulnerabilities-section">
+            <i class="fas fa-check-circle"></i>
+            <p>No vulnerabilities detected by OWASP ZAP!</p>
+          </div>
+          {% endif %}
+        </div>
+        {% else %}
         <div class="no-vulnerabilities">
           <i class="fas fa-check-circle"></i>
           <p>No vulnerabilities detected!</p>

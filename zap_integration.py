@@ -7,7 +7,7 @@ def run_zap_scan(target_url):
     Returns headers and passive vulnerabilities found
     """
     # ZAP API configuration
-    apikey = 'crc3ncf7mvh5rt517cptmf5p9d'
+    apikey = 'jn0lo09i52lcfgsvfmfe9o9neb'
     proxy = {'http': 'http://localhost:8080', 'https': 'http://localhost:8080'}
     
     # Initialize ZAP API client
