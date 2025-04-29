@@ -95,7 +95,7 @@ def scan():
         
         # Combine all vulnerabilities
         vulnerabilities = model_vulnerabilities + zap_vulnerabilities
-                
+        
         return render_template('index.html', 
                               steps=logs, 
                               url=url, 

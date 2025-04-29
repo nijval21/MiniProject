@@ -7,48 +7,48 @@ def run_zap_scan(target_url):
     Returns headers and passive vulnerabilities found
     """
     # ZAP API configuration
-    apikey = 'jn0lo09i52lcfgsvfmfe9o9neb'
+    apikey = 'omh5pkg8mnei4hc5jvf1aaoeln'
     proxy = {'http': 'http://localhost:8080', 'https': 'http://localhost:8080'}
-    
+
     # Initialize ZAP API client
     zap = ZAPv2(apikey=apikey, proxies=proxy)
-    
+
     try:
         # Access the target
         print(f'Accessing target: {target_url}')
         zap.urlopen(target_url)
-        
-        # Give the passive scanner time to complete
+
+        # Wait for passive scan to complete
         time.sleep(2)
-        
-        # Collect passive scan results
-        passive_results = zap.pscan.records()
-        
-        # Get response headers
-        response_headers = {}
-        for header in zap.core.response_headers:
-            name, value = header.split(':', 1)
-            response_headers[name.strip()] = value.strip()
-            
-        # Format the vulnerabilities for our application
+        while int(zap.pscan.records_to_scan) > 0:
+            print(f"[ZAP] Records left to scan: {zap.pscan.records_to_scan}")
+            time.sleep(1)
+
+        # Get ZAP alerts
+        alerts = zap.core.alerts(baseurl=target_url)
+
+        # Format the vulnerabilities
         vulnerabilities = []
-        for alert in passive_results:
+        for alert in alerts:
             vuln = {
-                "name": alert.get('name', 'Unknown Vulnerability'),
-                "severity": map_zap_severity(alert.get('risk')),
+                "name": alert.get('alert', 'Unknown'),
+                "severity": alert.get('confidence', 'Unknown'),
                 "description": alert.get('description', ''),
-                "impact": alert.get('solution', 'Unknown impact'),
+                "impact": alert.get('otherinfo', 'Potential security issue'),
                 "mitigation": alert.get('solution', 'Follow OWASP best practices'),
                 "confidence": alert.get('confidence', 'Unknown'),
                 "source": "OWASP ZAP"
             }
             vulnerabilities.append(vuln)
-            
+
+        # Dummy headers placeholder (ZAP doesn't return headers this way)
+        headers = {}
+
         return {
-            "headers": response_headers,
+            "headers": headers,
             "vulnerabilities": vulnerabilities
         }
-    
+
     except Exception as e:
         print(f"ZAP scan error: {str(e)}")
         return {
@@ -57,12 +57,12 @@ def run_zap_scan(target_url):
             "error": str(e)
         }
 
-def map_zap_severity(zap_risk):
-    """Map ZAP risk levels to our severity levels"""
-    risk_mapping = {
+def map_zap_severity(risk_code):
+    """Map ZAP risk codes to readable severity levels"""
+    mapping = {
         '3': 'High',
         '2': 'Medium',
         '1': 'Low',
         '0': 'Info'
     }
-    return risk_mapping.get(str(zap_risk), 'Medium')
+    return mapping.get(str(risk_code), 'Medium')
