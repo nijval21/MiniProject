@@ -1,7 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin, urlparse
+from collections import defaultdict
 import json
+
+# Security-relevant tags (matching the example code)
+SECURITY_TAGS = {"meta", "script", "iframe", "link", "form", "input", "object", "embed", "a", "applet", "img", "video", "audio", "button", "textarea", "select", "base", "style"}
 
 def fetch_url(url):
     """Fetch URL content using only requests"""
@@ -23,137 +26,55 @@ def fetch_url(url):
         print(f"Error with requests: {e}")
         return None, None
 
-def extract_links(soup, base_url):
-    """Extract links from soup object"""
-    links = []
-    for link in soup.find_all('a', href=True):
-        href = link['href']
-        if href.startswith('http') or href.startswith('/'):
-            absolute_link = urljoin(base_url, href)
-            links.append(absolute_link)
-    return list(set(links))
-
-def extract_security_headers(headers):
-    """Extract security-related headers"""
-    security_headers = {}
-    important_headers = [
-        'Content-Security-Policy',
-        'X-Content-Type-Options',
-        'X-Frame-Options',
-        'X-XSS-Protection',
-        'Strict-Transport-Security',
-        'Referrer-Policy',
-        'Feature-Policy',
-        'Permissions-Policy',
-        'Access-Control-Allow-Origin',
-        'Server',
-        'X-Powered-By'
-    ]
+def structure_html_content(html_content):
+    """Structure HTML content similar to the parse_http_response function"""
+    soup = BeautifulSoup(html_content, "html.parser")
     
-    # Check for presence and values of important headers
-    for header in important_headers:
-        if header in headers:
-            security_headers[header] = headers[header]
-    
-    return security_headers
-
-def analyze_html_for_vulnerabilities(html_content):
-    """Extract potentially vulnerable HTML elements"""
-    soup = BeautifulSoup(html_content, 'html.parser')
-    
-    vulnerable_elements = {
-        'forms': [],
-        'inline_scripts': [],
-        'external_scripts': [],
-        'iframes': [],
-        'meta_tags': []
-    }
-    
-    # Extract forms
-    for form in soup.find_all('form'):
-        form_data = {
-            'action': form.get('action', ''),
-            'method': form.get('method', 'GET'),
-            'inputs': []
-        }
+    structured_body = defaultdict(list)
+    for tag in soup.find_all(SECURITY_TAGS):
+        tag_name = tag.name
+        tag_content = tag.text.strip() if tag.text.strip() else None
+        tag_attrs = tag.attrs if tag.attrs else None
         
-        for input_tag in form.find_all('input'):
-            input_data = {
-                'type': input_tag.get('type', ''),
-                'name': input_tag.get('name', ''),
-                'id': input_tag.get('id', '')
-            }
-            form_data['inputs'].append(input_data)
-        
-        vulnerable_elements['forms'].append(form_data)
+        structured_body[tag_name].append({"content": tag_content, "attributes": tag_attrs})
     
-    # Extract inline scripts
-    for script in soup.find_all('script'):
-        if script.string:  # Has inline content
-            vulnerable_elements['inline_scripts'].append(script.string[:500])  # Limit to first 500 chars
-        elif script.get('src'):  # External script
-            vulnerable_elements['external_scripts'].append(script.get('src'))
-    
-    # Extract iframes
-    for iframe in soup.find_all('iframe'):
-        iframe_data = {
-            'src': iframe.get('src', ''),
-            'sandbox': iframe.get('sandbox', '')
-        }
-        vulnerable_elements['iframes'].append(iframe_data)
-    
-    # Extract meta tags
-    for meta in soup.find_all('meta'):
-        meta_data = {
-            'name': meta.get('name', ''),
-            'content': meta.get('content', ''),
-            'http-equiv': meta.get('http-equiv', '')
-        }
-        vulnerable_elements['meta_tags'].append(meta_data)
-    
-    return vulnerable_elements
+    return dict(structured_body)
+
+# Removed the vulnerability detection function as requested
 
 def run_crawler(url):
     """Main crawler function that returns security information about the URL"""
     print(f"Crawling {url}")
     
-    # Data structures to store results
-    all_data = {
-        'url': url,
-        'headers': {},
-        'vulnerable_elements': {},
-        'links': []
-    }
-    
     # Fetch the main URL
     html_content, headers = fetch_url(url)
     
     if html_content and headers:
-        # Parse HTML
-        soup = BeautifulSoup(html_content, 'html.parser')
+        # Structure the HTML content
+        structured_body = structure_html_content(html_content)
         
-        # Extract security headers
-        all_data['headers'] = extract_security_headers(headers)
+        # Format the results with just headers and body
+        formatted_result = {
+            "headers": headers,
+            "body": structured_body
+        }
         
-        # Extract potentially vulnerable elements
-        all_data['vulnerable_elements'] = analyze_html_for_vulnerabilities(html_content)
-        
-        # Extract links for future crawling (optional for now)
-        all_data['links'] = extract_links(soup, url)[:5]  # Limit to top 5 links
-        
-        # Create a summary string
-        summary = f"URL: {url}\n\n"
-        summary += "HEADERS:\n"
-        for header, value in all_data['headers'].items():
-            summary += f"{header}: {value}\n"
-        
-        summary += "\nVULNERABLE ELEMENTS:\n"
-        summary += f"Forms: {len(all_data['vulnerable_elements']['forms'])}\n"
-        summary += f"Inline Scripts: {len(all_data['vulnerable_elements']['inline_scripts'])}\n"
-        summary += f"External Scripts: {len(all_data['vulnerable_elements']['external_scripts'])}\n"
-        summary += f"Iframes: {len(all_data['vulnerable_elements']['iframes'])}\n"
-        
-        # Return the complete data
-        return json.dumps(all_data, indent=2)
+        # Return the formatted results as JSON
+        return json.dumps(formatted_result, indent=4)
     else:
-        return json.dumps({"error": "Failed to crawl the URL"})
+        return json.dumps({
+            "error": "Failed to crawl the URL",
+            "headers": {},
+            "body": {}
+        }, indent=4)
+
+# Example usage
+if __name__ == "__main__":
+    # Example URL for testing
+    sample_url = "https://ecobloom-gdsc-challenge.web.app/"
+    result = run_crawler(sample_url)
+    print(result)
+    
+    # Optionally save to a file
+    with open("structured_output.json", "w", encoding="utf-8") as f:
+        f.write(result)

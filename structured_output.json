@@ -1,0 +1,212 @@
+{
+    "headers": {
+        "Connection": "keep-alive",
+        "Content-Length": "796",
+        "Cache-Control": "max-age=3600",
+        "Content-Encoding": "gzip",
+        "Content-Type": "text/html; charset=utf-8",
+        "Etag": "\"923dd579e2a001cb6277e3617353f3ddddf22371a6f3f3fcdcd9812d52c98368\"",
+        "Last-Modified": "Sat, 30 Nov 2024 09:01:50 GMT",
+        "Strict-Transport-Security": "max-age=31556926; includeSubDomains; preload",
+        "Accept-Ranges": "bytes",
+        "Date": "Wed, 30 Apr 2025 05:03:44 GMT",
+        "X-Served-By": "cache-ccu830041-CCU",
+        "X-Cache": "HIT",
+        "X-Cache-Hits": "0",
+        "X-Timer": "S1745989424.334292,VS0,VE1",
+        "Vary": "x-fh-requested-host, accept-encoding",
+        "alt-svc": "h3=\":443\";ma=86400,h3-29=\":443\";ma=86400,h3-27=\":443\";ma=86400"
+    },
+    "body": {
+        "meta": [
+            {
+                "content": null,
+                "attributes": {
+                    "charset": "utf-8"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "name": "viewport",
+                    "content": "width=device-width,initial-scale=1"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "name": "theme-color",
+                    "content": "#000000"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "name": "description",
+                    "content": "EcoBloom is a digital platform empowering individuals and organizations to participate in environmental campaigns, earn rewards for sustainable actions, and foster a global culture of environmental stewardship."
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "property": "og:title",
+                    "content": "EcoBloom"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "property": "og:description",
+                    "content": "EcoBloom is a digital platform empowering individuals and organizations to participate in environmental campaigns, earn rewards for sustainable actions, and foster a global culture of environmental stewardship. "
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "property": "og:url",
+                    "content": "https://ecobloom-gdsc-challenge.web.app/"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "property": "twitter:title",
+                    "content": "EcoBloom"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "property": "twitter:description",
+                    "content": "EcoBloom is a digital platform empowering individuals and organizations to participate in environmental campaigns, earn rewards for sustainable actions, and foster a global culture of environmental stewardship. "
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "http-equiv": "X-UA-Compatible",
+                    "content": "IE=edge,chrome=1"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "name": "description",
+                    "content": "EcoBloom is a digital platform empowering individuals and organizations to participate in environmental campaigns, earn rewards for sustainable actions, and foster a global culture of environmental stewardship. "
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "name": "keywords",
+                    "er": "",
+                    "content": "EcoBloom, GDSC, Solutions Challenge, Top 100, Google, India , Campaigns, Winners"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "name": "viewport",
+                    "content": "width=device-width,initial-scale=1"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "name": "robots",
+                    "content": "index"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "name": "googlebot",
+                    "content": "all"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "name": "author",
+                    "content": "Team DebugDynasty,Team IIITA"
+                }
+            }
+        ],
+        "link": [
+            {
+                "content": null,
+                "attributes": {
+                    "rel": [
+                        "apple-touch-icon"
+                    ],
+                    "sizes": "180x180",
+                    "href": "/favicons/apple-touch-icon.png"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "rel": [
+                        "icon"
+                    ],
+                    "type": "image/png",
+                    "sizes": "32x32",
+                    "href": "/favicons/favicon-32x32.png"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "rel": [
+                        "icon"
+                    ],
+                    "type": "image/png",
+                    "sizes": "16x16",
+                    "href": "//faviconsfavicon-16x16.png"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "rel": [
+                        "manifest"
+                    ],
+                    "href": "/site.webmanifest"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "href": "https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css",
+                    "rel": [
+                        "stylesheet"
+                    ]
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "href": "/static/css/main.94d2be87.css",
+                    "rel": [
+                        "stylesheet"
+                    ]
+                }
+            }
+        ],
+        "script": [
+            {
+                "content": null,
+                "attributes": {
+                    "defer": "defer",
+                    "src": "/static/js/main.33375742.js"
+                }
+            },
+            {
+                "content": null,
+                "attributes": {
+                    "src": "https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"
+                }
+            }
+        ]
+    }
+}
