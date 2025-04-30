@@ -1,13 +1,15 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 from crawler import run_crawler
 from preprocessing import run_preprocessing
 from model_predict import run_model
 from zap_integration import run_zap_scan
+from chatbot import chatbot
 import json
 import os
 import random
 
 app = Flask(__name__)
+app.secret_key = os.urandom(24)  # For session management
 
 @app.route('/')
 def index():
@@ -181,6 +183,41 @@ def api_scan():
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# NEW: Chat endpoint for the Webo chatbot
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    """API endpoint for the Webo chatbot"""
+    data = request.get_json()
+    if not data or 'message' not in data:
+        return jsonify({"error": "Message is required"}), 400
+    
+    message = data['message']
+    
+    # Initialize or get chat history from session
+    if 'chat_history' not in session:
+        session['chat_history'] = []
+    
+    # Add user message to history
+    session['chat_history'].append({"role": "user", "content": message})
+    
+    # Get response from chatbot
+    response = chatbot.get_response(message, session['chat_history'])
+    
+    # Add assistant response to history
+    session['chat_history'].append({"role": "assistant", "content": response["response"]})
+    
+    # Keep history length reasonable
+    if len(session['chat_history']) > 20:
+        session['chat_history'] = session['chat_history'][-20:]
+    
+    # Mark session as modified
+    session.modified = True
+    
+    return jsonify({
+        "message": response["response"],
+        "is_security_related": response.get("is_security_related", True)
+    })
 
 if __name__ == '__main__':
     # Create vuln_data.json if it doesn't exist
