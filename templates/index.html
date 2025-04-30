@@ -1200,6 +1200,555 @@
       position: relative;
       overflow: hidden;
     }
+    /* Chatbot Styles */
+.chatbot-launcher {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  background: var(--primary-gradient);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--box-shadow);
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+.chatbot-launcher i {
+  font-size: 1.5rem;
+}
+
+.chatbot-launcher:hover {
+  transform: scale(1.1);
+  box-shadow: 0 10px 25px rgba(71, 118, 230, 0.4);
+}
+
+.chatbot-container {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 380px;
+  height: 600px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: all 0.3s ease;
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.chatbot-container.expanded {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.chatbot-header {
+  padding: 20px;
+  background: var(--primary-gradient);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatbot-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chatbot-toggle {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.chatbot-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.chatbot-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chatbot-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  background-color: var(--bg-primary);
+}
+
+.chat-message {
+  display: flex;
+  margin-bottom: 15px;
+  gap: 12px;
+}
+
+.chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.user-avatar {
+  background: var(--primary-gradient);
+  color: white;
+}
+
+<!-- .bot-avatar {
+  background: var(--success-gradient);
+  color: white;
+} -->
+
+.message-content {
+  padding: 12px 16px;
+  border-radius: 18px;
+  max-width: 80%;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.user-message .message-content {
+  background: var(--primary-color);
+  color: white;
+  border-top-right-radius: 4px;
+  margin-left: auto;
+}
+
+.bot-message .message-content {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-top-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.not-security-related {
+  background: rgba(255, 193, 7, 0.1) !important;
+  border-left: 3px solid #FFC107;
+}
+
+.chatbot-input {
+  padding: 15px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input-field {
+  flex: 1;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 50px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.chat-input-field:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(71, 118, 230, 0.2);
+}
+
+.chat-send-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.chat-send-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(71, 118, 230, 0.3);
+}
+
+.chatbot-typing {
+  display: flex;
+  padding: 15px 0;
+  gap: 8px;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--text-secondary);
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: typingAnimation 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingAnimation {
+  0%, 60%, 100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-5px);
+  }
+}
+
+/* Code blocks in messages */
+.message-content code {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .chatbot-container {
+    width: 100%;
+    height: 100%;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+  }
+  
+  .chatbot-launcher {
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+  }
+}
+.chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+  color: transparent !important; /* Add this line to hide the text */
+}
+
+.user-avatar {
+  background: var(--primary-gradient);
+}
+
+.bot-avatar {
+  background: var(--success-gradient);
+}
+/* Main Vulnerability Sliders */
+.collapsible {
+  background: var(--card-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 20px 25px;
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  text-align: left;
+  outline: none;
+  font-size: 1.05rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+  border-left: 4px solid var(--danger-color);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.collapsible::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--danger-gradient);
+  transform: scaleY(1);
+  transform-origin: bottom;
+  transition: transform 0.3s ease;
+}
+
+.collapsible:hover::before,
+.collapsible.active::before {
+  transform: scaleY(3);
+}
+
+.collapsible:hover,
+.collapsible.active {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.collapsible-icon {
+  background: var(--danger-gradient);
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.active .collapsible-icon {
+  transform: rotate(180deg);
+}
+
+/* Severity-specific styles */
+.collapsible.high-vuln {
+  border-left-color: #FF416C;
+}
+
+.collapsible.medium-vuln {
+  border-left-color: #F7B733;
+}
+
+.collapsible.low-vuln {
+  border-left-color: #3494E6;
+}
+
+.collapsible.info-vuln {
+  border-left-color: #56CCF2;
+}
+
+.high-vuln::before {
+  background: linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%);
+}
+
+.medium-vuln::before {
+  background: linear-gradient(135deg, #F7B733 0%, #FC4A1A 100%);
+}
+
+.low-vuln::before {
+  background: linear-gradient(135deg, #3494E6 0%, #EC6EAD 100%);
+}
+
+.info-vuln::before {
+  background: linear-gradient(135deg, #56CCF2 0%, #2F80ED 100%);
+}
+/* Chatbot Message Sliders */
+.chatbot-message-slider {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  margin: 10px 0;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.chatbot-slider-header {
+  padding: 15px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.chatbot-slider-header:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.chatbot-slider-header i {
+  transition: transform 0.3s ease;
+}
+
+.chatbot-slider-header.active i {
+  transform: rotate(180deg);
+}
+
+.chatbot-slider-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s ease-out;
+  padding: 0 20px;
+  background: var(--card-bg);
+}
+
+.chatbot-slider-content-inner {
+  padding: 15px 0;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Security level indicators */
+.security-high {
+  border-left: 4px solid #FF416C;
+}
+
+.security-medium {
+  border-left: 4px solid #F7B733;
+}
+
+.security-low {
+  border-left: 4px solid #3494E6;
+}
+/* Chatbot Message Sliders */
+.chatbot-slider {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  margin: 12px 0;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-left: 4px solid var(--primary-color);
+  transition: all 0.3s ease;
+}
+
+.chatbot-slider-header {
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.chatbot-slider-header:hover {
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.chatbot-slider-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--primary-gradient);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  transition: all 0.3s ease;
+}
+
+.chatbot-slider.active .chatbot-slider-icon {
+  transform: rotate(180deg);
+}
+
+.chatbot-slider-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out;
+  background: var(--card-bg);
+}
+
+.chatbot-slider-content-inner {
+  padding: 0 20px 20px;
+}
+
+/* Active state */
+.chatbot-slider.active {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Severity levels */
+.chatbot-slider.security-high {
+  border-left-color: var(--danger-color);
+}
+
+.chatbot-slider.security-medium {
+  border-left-color: #F7B733;
+}
+
+.chatbot-slider.security-low {
+  border-left-color: #3494E6;
+}
+
+/* Content styling */
+.chatbot-slider-content-inner p {
+  margin: 12px 0;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.chatbot-slider-content-inner strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.chatbot-slider-content-inner code {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+}
+
+  /* Remove or comment out these styles in the CSS section */
+/*
+.chat-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  flex-shrink: 0;
+}
+
+.user-avatar {
+  background: var(--primary-gradient);
+  color: white;
+}
+
+.bot-avatar {
+  background: var(--success-gradient);
+  color: white;
+}
 
 
     /* Keep all original CSS as well */
@@ -1498,6 +2047,297 @@
           }, 300);
         }
       });
+    }
+  </script>
+  <script>
+    // Webo Chatbot Implementation
+    document.addEventListener("DOMContentLoaded", function () {
+      // Create and append chatbot elements to the DOM
+      createChatbotElements();
+
+      // Initialize chatbot state and event handlers
+      initChatbot();
+    });
+
+    // Create all necessary HTML elements for the chatbot
+    function createChatbotElements() {
+      // Create chatbot launcher (icon button)
+      const launcher = document.createElement("div");
+      launcher.className = "chatbot-launcher";
+      launcher.id = "chatbot-launcher";
+      launcher.innerHTML = '<i class="fas fa-comment-dots"></i>';
+      document.body.appendChild(launcher);
+
+      // Create chatbot container
+      const container = document.createElement("div");
+      container.className = "chatbot-container";
+      container.id = "chatbot-container";
+
+      // Create header
+      const header = document.createElement("div");
+      header.className = "chatbot-header";
+      header.innerHTML = `
+          <h3><i class="fas fa-shield-alt"></i> Webo Security Assistant</h3>
+          <button id="chatbot-toggle" class="chatbot-toggle"><i class="fas fa-minus"></i></button>
+      `;
+
+      // Create body
+      const body = document.createElement("div");
+      body.className = "chatbot-body";
+
+      // Create messages container
+      const messagesDiv = document.createElement("div");
+      messagesDiv.className = "chatbot-messages";
+      messagesDiv.id = "chatbot-messages";
+
+      // Create input area
+      const inputDiv = document.createElement("div");
+      inputDiv.className = "chatbot-input";
+      inputDiv.innerHTML = `
+          <input type="text" class="chat-input-field" id="chat-input" placeholder="Ask about web security..." />
+          <button class="chat-send-btn" id="chat-send-btn">
+              <i class="fas fa-paper-plane"></i>
+          </button>
+      `;
+
+      // Assemble all components
+      body.appendChild(messagesDiv);
+      body.appendChild(inputDiv);
+      container.appendChild(header);
+      container.appendChild(body);
+      document.body.appendChild(container);
+    }
+
+    // Initialize chatbot functionality
+    function initChatbot() {
+      const chatbotLauncher = document.getElementById("chatbot-launcher");
+      const chatbotContainer = document.getElementById("chatbot-container");
+      const chatbotToggle = document.getElementById("chatbot-toggle");
+      const chatInput = document.getElementById("chat-input");
+      const sendButton = document.getElementById("chat-send-btn");
+      const messagesContainer = document.getElementById("chatbot-messages");
+
+      // Add welcome message
+      addBotMessage(
+        "Hello! I'm Webo, your security assistant. How can I help you with web security today?"
+      );
+
+      // Toggle chatbot visibility when launcher is clicked
+      chatbotLauncher.addEventListener("click", function () {
+        chatbotContainer.classList.toggle("expanded");
+        chatInput.focus();
+      });
+
+      // Toggle chatbot minimize/maximize
+      chatbotToggle.addEventListener("click", function () {
+        chatbotContainer.classList.toggle("expanded");
+        chatInput.focus();
+      });
+
+      // Send message on button click
+      sendButton.addEventListener("click", sendMessage);
+
+      // Send message on Enter key
+      chatInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          sendMessage();
+        }
+      });
+
+      // Function to send message
+      function sendMessage() {
+        const message = chatInput.value.trim();
+        if (message.length === 0) return;
+
+        // Add user message to chat
+        addUserMessage(message);
+
+        // Clear input
+        chatInput.value = "";
+
+        // Show typing indicator
+        showTypingIndicator();
+
+        // Send message to backend
+        fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ message: message }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Remove typing indicator
+            hideTypingIndicator();
+
+            // Add bot response
+            addBotMessage(data.message, !data.is_security_related);
+
+            // Scroll to bottom
+            scrollToBottom();
+          })
+          .catch((error) => {
+            // Remove typing indicator
+            hideTypingIndicator();
+
+            // Show error message
+            addBotMessage(
+              "Sorry, I'm having trouble connecting right now. Please try again later."
+            );
+            console.error("Error:", error);
+
+            // Scroll to bottom
+            scrollToBottom();
+          });
+      }
+
+      // Update the addUserMessage function:
+      function addUserMessage(message) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "chat-message user-message";
+        messageDiv.innerHTML = `
+      <div class="message-content">${escapeHtml(message)}</div>
+  `;
+        messagesContainer.appendChild(messageDiv);
+        scrollToBottom();
+      }
+
+      // Update the addBotMessage function:
+      function addBotMessage(message, isNotSecurityRelated = false) {
+        const messageDiv = document.createElement("div");
+        messageDiv.className = "chat-message bot-message";
+
+        // Check if message contains sections that should be sliders
+        if (message.includes("## ")) {
+          const sections = message.split("## ");
+          let formattedMessage = '';
+
+          // First part is regular message
+          if (sections[0].trim().length > 0) {
+            formattedMessage += `<div class="message-content">${formatMessage(sections[0])}</div>`;
+          }
+
+          // Process each section as a slider
+          for (let i = 1; i < sections.length; i++) {
+            const sectionParts = sections[i].split("\n\n");
+            const title = sectionParts[0].trim();
+            const content = sectionParts.slice(1).join("\n\n").trim();
+
+            // Determine security level
+            let securityClass = '';
+            if (title.toLowerCase().includes('high risk')) {
+              securityClass = 'security-high';
+            } else if (title.toLowerCase().includes('medium risk')) {
+              securityClass = 'security-medium';
+            } else if (title.toLowerCase().includes('low risk')) {
+              securityClass = 'security-low';
+            }
+
+            formattedMessage += `
+        <div class="chatbot-slider ${securityClass}">
+          <div class="chatbot-slider-header">
+            <span>${formatMessage(title)}</span>
+            <div class="chatbot-slider-icon">
+              <i class="fas fa-chevron-down"></i>
+            </div>
+          </div>
+          <div class="chatbot-slider-content">
+            <div class="chatbot-slider-content-inner">
+              ${formatMessage(content)}
+            </div>
+          </div>
+        </div>
+      `;
+          }
+
+          messageDiv.innerHTML = formattedMessage;
+        } else {
+          // Regular message
+          const contentClass = isNotSecurityRelated ?
+            "message-content not-security-related" : "message-content";
+          messageDiv.innerHTML = `<div class="${contentClass}">${formatMessage(message)}</div>`;
+        }
+
+        messagesContainer.appendChild(messageDiv);
+
+        // Add click handlers for all sliders in this message
+        const sliders = messageDiv.querySelectorAll('.chatbot-slider-header');
+        sliders.forEach(header => {
+          header.addEventListener('click', function () {
+            const slider = this.parentElement;
+            slider.classList.toggle('active');
+            const content = this.nextElementSibling;
+            content.style.maxHeight = content.style.maxHeight ? null : content.scrollHeight + "px";
+          });
+        });
+
+        scrollToBottom();
+      }
+
+      // Show typing indicator
+      function showTypingIndicator() {
+        const typingDiv = document.createElement("div");
+        typingDiv.className = "chatbot-typing";
+        typingDiv.id = "typing-indicator";
+        typingDiv.innerHTML = `
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+              <div class="typing-dot"></div>
+          `;
+        messagesContainer.appendChild(typingDiv);
+        scrollToBottom();
+      }
+
+      // Hide typing indicator
+      function hideTypingIndicator() {
+        const typingIndicator = document.getElementById("typing-indicator");
+        if (typingIndicator) {
+          typingIndicator.remove();
+        }
+      }
+
+      // Scroll messages container to bottom
+      function scrollToBottom() {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      // Format message with simple markdown support
+      function formatMessage(message) {
+        if (!message) return "";
+
+        // Escape HTML first to prevent XSS
+        let formatted = escapeHtml(message);
+
+        // Convert markdown to HTML
+        formatted = formatted
+          // Headers (##)
+          .replace(/^# (.*$)/gm, '<h4>$1</h4>')
+          // Bold
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          // Italic
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          // Code blocks
+          .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+          // Inline code
+          .replace(/`(.*?)`/g, '<code>$1</code>')
+          // Links
+          .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>')
+          // Line breaks
+          .replace(/\n/g, '<br>');
+
+        return formatted;
+      }
+
+      // Escape HTML to prevent XSS
+      function escapeHtml(unsafe) {
+        return unsafe
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
     }
   </script>
 </body>
