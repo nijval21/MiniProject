@@ -39,7 +39,6 @@ def scan():
     logs = []
     vulnerabilities = []
     headers = {}
-    headers = {}
     
     try:
         # Step 1: Crawler - Get web page data
@@ -66,25 +65,13 @@ def scan():
         headers = zap_results.get('headers', {})
         zap_vulnerabilities = zap_results.get('vulnerabilities', [])
         
-        # Step 4: Run OWASP ZAP scan
-        logs.append("Running OWASP ZAP scan...")
-        zap_results = run_zap_scan(url)
-        logs.append("ZAP scan completed")
-        
-        # Extract ZAP results
-        headers = zap_results.get('headers', {})
-        zap_vulnerabilities = zap_results.get('vulnerabilities', [])
-        
         # If we have detailed vulnerabilities from the model, use them directly
         model_vulnerabilities = []
-        model_vulnerabilities = []
         if detailed_vulnerabilities:
-            model_vulnerabilities = detailed_vulnerabilities
             model_vulnerabilities = detailed_vulnerabilities
         else:
             # Fall back to the previous approach using vuln_data.json
             try:
-                detailed_model_vulnerabilities = []
                 detailed_model_vulnerabilities = []
                 
                 # Load full vulnerability data
@@ -104,9 +91,7 @@ def scan():
                     vuln_info = next((v for v in vuln_details if v["name"].lower() == name.lower()), None)
                     if vuln_info:
                         detailed_model_vulnerabilities.append(vuln_info)
-                        detailed_model_vulnerabilities.append(vuln_info)
                     else:
-                        detailed_model_vulnerabilities.append({
                         detailed_model_vulnerabilities.append({
                             "name": name,
                             "severity": severity,
@@ -114,17 +99,11 @@ def scan():
                             "impact": "Could potentially impact security",
                             "mitigation": "Follow security best practices",
                             "source": "AI Model"
-                            "mitigation": "Follow security best practices",
-                            "source": "AI Model"
                         })
                         
                 model_vulnerabilities = detailed_model_vulnerabilities
-                model_vulnerabilities = detailed_model_vulnerabilities
                 
             except Exception as e:
-                model_vulnerabilities = [{"name": name, "severity": "Unknown", "description": name, 
-                                   "impact": "Impact unknown", "mitigation": "Mitigation unknown",
-                                   "source": "AI Model"} 
                 model_vulnerabilities = [{"name": name, "severity": "Unknown", "description": name, 
                                    "impact": "Impact unknown", "mitigation": "Mitigation unknown",
                                    "source": "AI Model"} 
@@ -144,8 +123,6 @@ def scan():
         return render_template('index.html', 
                               steps=logs, 
                               url=url, 
-                              vulnerabilities=vulnerabilities,
-                              headers=headers)
                               vulnerabilities=vulnerabilities,
                               headers=headers)
                               
@@ -200,8 +177,6 @@ def api_scan():
         
         return jsonify({
             "url": url,
-            "vulnerabilities": all_vulnerabilities,
-            "headers": headers,
             "vulnerabilities": all_vulnerabilities,
             "headers": headers,
             "raw_data": preprocessed_data.get('structured_data', {})
