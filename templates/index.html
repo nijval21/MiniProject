@@ -763,6 +763,7 @@
       transition: all 750ms !important;
       transition-delay: 0 !important;
     }
+
     .severity-badge {
       display: inline-block;
       padding: 5px 12px;
@@ -890,7 +891,7 @@
       font-weight: 600;
       color: var(--success-color);
     }
-    
+
     /* Source badge styles */
     .source-badge {
       display: inline-block;
@@ -903,26 +904,26 @@
       border: 1px solid var(--border-color);
       color: var(--text-secondary);
     }
-    
+
     .source-ai-model {
       background-color: rgba(71, 118, 230, 0.1);
       color: var(--primary-color);
       border-color: rgba(71, 118, 230, 0.2);
     }
-    
+
     .source-owasp-zap {
       background-color: rgba(22, 163, 74, 0.1);
       color: var(--success-color);
       border-color: rgba(22, 163, 74, 0.2);
     }
-    
+
     /* Headers section styles */
     .headers-section {
       margin: 40px 0;
       padding-bottom: 30px;
       border-bottom: 1px solid var(--border-color);
     }
-    
+
     .headers-section h3 {
       font-size: 1.5rem;
       margin-bottom: 25px;
@@ -930,11 +931,11 @@
       align-items: center;
       gap: 15px;
     }
-    
+
     .headers-section h3 i {
       color: var(--primary-color);
     }
-    
+
     .headers-container {
       max-height: 300px;
       overflow-y: auto;
@@ -943,31 +944,31 @@
       border: 1px solid var(--border-color);
       padding: 15px;
     }
-    
+
     .header-item {
       display: flex;
       margin-bottom: 8px;
       padding-bottom: 8px;
       border-bottom: 1px solid var(--border-color);
     }
-    
+
     .header-item:last-child {
       border-bottom: none;
       margin-bottom: 0;
       padding-bottom: 0;
     }
-    
+
     .header-name {
       font-weight: 600;
       min-width: 200px;
       color: var(--primary-color);
     }
-    
+
     .header-value {
       flex: 1;
       word-break: break-all;
     }
-    
+
     /* Confidence section */
     .confidence-section {
       margin-top: 20px;
@@ -975,7 +976,7 @@
       background-color: rgba(71, 118, 230, 0.1);
       border-radius: 10px;
     }
-    
+
     .confidence-section h4 {
       display: flex;
       align-items: center;
@@ -983,6 +984,7 @@
       color: var(--primary-color);
       margin-bottom: 15px;
     }
+
     .stages::before {
       content: "";
       position: absolute;
@@ -1002,179 +1004,182 @@
       position: relative;
       z-index: 2;
     }
+
     /* Section dividers */
-.vulnerability-section {
-  margin-bottom: 40px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-color);
-}
+    .vulnerability-section {
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
 
-.vulnerability-section:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-}
+    .vulnerability-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
 
-.section-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 25px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border-color);
-}
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
 
-.section-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-.ai-model-icon {
-  color: var(--primary-color);
-}
+    .ai-model-icon {
+      color: var(--primary-color);
+    }
 
-.owasp-zap-icon {
-  color: var(--success-color);
-}
+    .owasp-zap-icon {
+      color: var(--success-color);
+    }
 
-.section-badge {
-  display: inline-block;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-left: 12px;
-}
+    .section-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 12px;
+    }
 
-.section-badge-ai {
-  background-color: rgba(71, 118, 230, 0.1);
-  color: var(--primary-color);
-  border: 1px solid rgba(71, 118, 230, 0.2);
-}
+    .section-badge-ai {
+      background-color: rgba(71, 118, 230, 0.1);
+      color: var(--primary-color);
+      border: 1px solid rgba(71, 118, 230, 0.2);
+    }
 
-.section-badge-zap {
-  background-color: rgba(22, 163, 74, 0.1);
-  color: var(--success-color);
-  border: 1px solid rgba(22, 163, 74, 0.2);
-}
+    .section-badge-zap {
+      background-color: rgba(22, 163, 74, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(22, 163, 74, 0.2);
+    }
 
-.no-vulnerabilities-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px 0;
-  background-color: var(--bg-secondary);
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
+    .no-vulnerabilities-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 0;
+      background-color: var(--bg-secondary);
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
 
-/* Count badge */
-.count-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 25px;
-  height: 25px;
-  background: var(--primary-gradient);
-  color: white;
-  border-radius: 50%;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-left: 10px;
-}
+    /* Count badge */
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 25px;
+      height: 25px;
+      background: var(--primary-gradient);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
 
-.count-badge-zap {
-  background: var(--success-gradient);
-}
-/* Section dividers */
-.vulnerability-section {
-  margin-bottom: 40px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border-color);
-}
+    .count-badge-zap {
+      background: var(--success-gradient);
+    }
 
-.vulnerability-section:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-}
+    /* Section dividers */
+    .vulnerability-section {
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
 
-.section-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 25px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid var(--border-color);
-}
+    .vulnerability-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
 
-.section-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+    .section-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
 
-.ai-model-icon {
-  color: var(--primary-color);
-}
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-.owasp-zap-icon {
-  color: var(--success-color);
-}
+    .ai-model-icon {
+      color: var(--primary-color);
+    }
 
-.section-badge {
-  display: inline-block;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-left: 12px;
-}
+    .owasp-zap-icon {
+      color: var(--success-color);
+    }
 
-.section-badge-ai {
-  background-color: rgba(71, 118, 230, 0.1);
-  color: var(--primary-color);
-  border: 1px solid rgba(71, 118, 230, 0.2);
-}
+    .section-badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 12px;
+    }
 
-.section-badge-zap {
-  background-color: rgba(22, 163, 74, 0.1);
-  color: var(--success-color);
-  border: 1px solid rgba(22, 163, 74, 0.2);
-}
+    .section-badge-ai {
+      background-color: rgba(71, 118, 230, 0.1);
+      color: var(--primary-color);
+      border: 1px solid rgba(71, 118, 230, 0.2);
+    }
 
-.no-vulnerabilities-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 30px 0;
-  background-color: var(--bg-secondary);
-  border-radius: 12px;
-  margin-bottom: 20px;
-}
+    .section-badge-zap {
+      background-color: rgba(22, 163, 74, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(22, 163, 74, 0.2);
+    }
 
-/* Count badge */
-.count-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 25px;
-  height: 25px;
-  background: var(--primary-gradient);
-  color: white;
-  border-radius: 50%;
-  font-size: 0.8rem;
-  font-weight: 600;
-  margin-left: 10px;
-}
+    .no-vulnerabilities-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px 0;
+      background-color: var(--bg-secondary);
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
 
-.count-badge-zap {
-  background: var(--success-gradient);
-}
-.collapsible {
+    /* Count badge */
+    .count-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 25px;
+      height: 25px;
+      background: var(--primary-gradient);
+      color: white;
+      border-radius: 50%;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+
+    .count-badge-zap {
+      background: var(--success-gradient);
+    }
+
+    .collapsible {
       background: var(--card-bg);
       color: var(--text-primary);
       cursor: pointer;
@@ -1195,7 +1200,7 @@
       position: relative;
       overflow: hidden;
     }
-    /* Chatbot Styling */
+
 
     /* Keep all original CSS as well */
     /* Keep all original CSS as well */
@@ -1303,8 +1308,6 @@
       <div class="vulnerability-list">
         <h3><i class="fas fa-exclamation-triangle"></i> Detected Vulnerabilities</h3>
 
-        {% if vulnerabilities %}
-        {% for vuln in vulnerabilities %}
         {% if vulnerabilities %}
         <!-- AI Model Vulnerabilities Section -->
         <div class="vulnerability-section">
