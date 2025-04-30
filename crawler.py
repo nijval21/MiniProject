@@ -152,7 +152,7 @@ def run_crawler(url):
         summary += f"Inline Scripts: {len(all_data['vulnerable_elements']['inline_scripts'])}\n"
         summary += f"External Scripts: {len(all_data['vulnerable_elements']['external_scripts'])}\n"
         summary += f"Iframes: {len(all_data['vulnerable_elements']['iframes'])}\n"
-        
+        # print(all_data)
         # Return the complete data
         return json.dumps(all_data, indent=2)
     else:

@@ -98,7 +98,7 @@ def scan():
                             "description": f"Detected {name} vulnerability",
                             "impact": "Could potentially impact security",
                             "mitigation": "Follow security best practices",
-                            "source": "AI Model"
+                            "source": "LLM Model"
                         })
                         
                 model_vulnerabilities = detailed_model_vulnerabilities
@@ -106,13 +106,13 @@ def scan():
             except Exception as e:
                 model_vulnerabilities = [{"name": name, "severity": "Unknown", "description": name, 
                                    "impact": "Impact unknown", "mitigation": "Mitigation unknown",
-                                   "source": "AI Model"} 
+                                   "source": "LLM Model"} 
                                   for name in vulnerability_names]
         
         # Add source to model vulnerabilities if not present
         for vuln in model_vulnerabilities:
             if "source" not in vuln:
-                vuln["source"] = "AI Model"
+                vuln["source"] = "LLM Model"
         
         # Apply the limit to OWASP ZAP vulnerabilities
         limited_zap_vulns = limit_owasp_vulnerabilities(model_vulnerabilities, zap_vulnerabilities)
@@ -154,7 +154,7 @@ def api_scan():
         if detailed_vulnerabilities:
             for vuln in detailed_vulnerabilities:
                 if "source" not in vuln:
-                    vuln["source"] = "AI Model"
+                    vuln["source"] = "LLM Model"
             model_vulnerabilities = detailed_vulnerabilities
         else:
             # Format basic vulnerability names with source info
@@ -165,7 +165,7 @@ def api_scan():
                     "description": f"Detected {name} vulnerability",
                     "impact": "Could potentially impact security",
                     "mitigation": "Follow security best practices",
-                    "source": "AI Model"
+                    "source": "LLM Model"
                 } for name in vulnerability_names
             ]
         

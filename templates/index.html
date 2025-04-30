@@ -1282,7 +1282,7 @@
           <div class="stage-icon">
             <i class="fas fa-brain"></i>
           </div>
-          <div class="stage-text">AI Model Analysis</div>
+          <div class="stage-text">LLM Model Analysis</div>
         </div>
         <div class="stage">
           <div class="stage-icon">
@@ -1314,15 +1314,15 @@
           <div class="section-header">
             <span class="section-title">
               <i class="fas fa-brain ai-model-icon"></i>
-              AI Model Analysis
+              LLM Model Analysis
               <span class="section-badge section-badge-ai">Machine Learning</span>
               <span class="count-badge">
-                {{ vulnerabilities|selectattr('source', 'equalto', 'AI Model')|list|length }}
+                {{ vulnerabilities|selectattr('source', 'equalto', 'LLM Model')|list|length }}
               </span>
             </span>
           </div>
 
-          {% set ai_vulnerabilities = vulnerabilities|selectattr('source', 'equalto', 'AI Model')|list %}
+          {% set ai_vulnerabilities = vulnerabilities|selectattr('source', 'equalto', 'LLM Model')|list %}
           {% if ai_vulnerabilities %}
           {% for vuln in ai_vulnerabilities %}
           <div class="vuln-item">
@@ -1361,7 +1361,7 @@
           {% else %}
           <div class="no-vulnerabilities-section">
             <i class="fas fa-check-circle"></i>
-            <p>No vulnerabilities detected by AI model!</p>
+            <p>No vulnerabilities detected by LLM model!</p>
           </div>
           {% endif %}
         </div>

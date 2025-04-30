@@ -1,0 +1,51 @@
+{
+  "url": "https://erp.iiita.ac.in/",
+  "headers": {
+    "X-Frame-Options": "SAMEORIGIN",
+    "Access-Control-Allow-Origin": "*",
+    "Server": "Apache/2.4.37 (Rocky Linux) OpenSSL/1.1.1k",
+    "X-Powered-By": "PHP/7.4.33"
+  },
+  "vulnerable_elements": {
+    "forms": [
+      {
+        "action": "",
+        "method": "POST",
+        "inputs": [
+          { "type": "text", "name": "uid", "id": "" },
+          { "type": "password", "name": "pwd", "id": "" }
+        ]
+      }
+    ],
+    "inline_scripts": [
+      "$(document).ready(function () {\r\n\t\t\t\t\tvar graphX=[\n    \"Student\",\n    \"Faculty\",\n    \"Library\",\n    \"IHC\",\n    \" \"\n];\r\n\t\t\t\t\tvar graphY=[\n    \"80\",\n    \"4\",\n    \"1\",\n    \"1\",\n    0\n];\r\n\t\t\t\t\trenderGraph(graphX,graphY,'Session Count (86)','charta','bar',['silver','#D7BDE2','#AED6F1','#A2D9CE','#F9E79F','#7E5109','#17A589','#512E5F','#F0B27A','#5D6D7E']);\r\n\t\t\t\t})"
+    ],
+    "external_scripts": [
+      "js/fontawesome-all.js",
+      "js/jquery.min.js",
+      "js/erp_ajax.js",
+      "js/jquerychart.min.js",
+      "js/fontsizer.js",
+      "js/jspdf.umd.min.js",
+      "js/html2canvas.min.js",
+      "js/erp_body.js"
+    ],
+    "iframes": [],
+    "meta_tags": [
+      { "name": "", "content": "", "http-equiv": "" },
+      { "name": "", "content": "23:59:00 GMT", "http-equiv": "expires" },
+      { "name": "", "content": "text/html; charset=utf-8", "http-equiv": "content-type" },
+      { "name": "", "content": "IE=EmulateIE9", "http-equiv": "X-UA-Compatible" },
+      { "name": "viewport", "content": "width=device-width,initial-scale=1.0,shrink-to-fit=yes", "http-equiv": "" },
+      { "name": "description", "content": "enterprise resource planning, institute resource planning, iiita resource planning", "http-equiv": "" },
+      { "name": "author", "content": "Dr. M.K. Mishra, System Analyst", "http-equiv": "" }
+    ]
+  },
+  "links": [
+    "https://erp.iiita.ac.in/",
+    "https://www.iiita.ac.in",
+    "http://www.nad.gov.in",
+    "https://erp.iiita.ac.in/?moduleID=3",
+    "https://erp.iiita.ac.in/?moduleID=2"
+  ]
+}
