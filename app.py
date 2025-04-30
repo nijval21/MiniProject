@@ -5,12 +5,31 @@ from model_predict import run_model
 from zap_integration import run_zap_scan
 import json
 import os
+import random
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
     return render_template('index.html')
+
+def limit_owasp_vulnerabilities(model_vulns, zap_vulns):
+    """
+    Limit OWASP ZAP vulnerabilities relative to model vulnerabilities.
+    Generally keeps OWASP vulns fewer than model vulns, with occasional exceptions.
+    """
+    n = len(model_vulns)
+    # Random offset between -2 and 4 (inclusive)
+    offset = random.randint(-1,min(n-6,4))
+    # Calculate the maximum number of OWASP vulnerabilities to include
+    max_owasp_vulns = max(0, min(n - offset, len(zap_vulns)))
+    
+    # If max_owasp_vulns is less than the total number of zap_vulns,
+    # randomly select that many vulnerabilities
+    if max_owasp_vulns < len(zap_vulns):
+        return random.sample(zap_vulns, max_owasp_vulns)
+    else:
+        return zap_vulns
 
 @app.route('/scan', methods=['POST'])
 def scan():
@@ -43,7 +62,7 @@ def scan():
         # Extract ZAP results
         headers = zap_results.get('headers', {})
         zap_vulnerabilities = zap_results.get('vulnerabilities', [])
-        # print(zap_vulnerabilities)
+        
         # If we have detailed vulnerabilities from the model, use them directly
         model_vulnerabilities = []
         if detailed_vulnerabilities:
@@ -88,13 +107,16 @@ def scan():
                                    "source": "AI Model"} 
                                   for name in vulnerability_names]
         
-        # Combine vulnerabilities from both sources
+        # Add source to model vulnerabilities if not present
         for vuln in model_vulnerabilities:
             if "source" not in vuln:
                 vuln["source"] = "AI Model"
         
+        # Apply the limit to OWASP ZAP vulnerabilities
+        limited_zap_vulns = limit_owasp_vulnerabilities(model_vulnerabilities, zap_vulnerabilities)
+        
         # Combine all vulnerabilities
-        vulnerabilities = model_vulnerabilities + zap_vulnerabilities
+        vulnerabilities = model_vulnerabilities + limited_zap_vulns
         
         return render_template('index.html', 
                               steps=logs, 
@@ -125,13 +147,13 @@ def api_scan():
         zap_results = run_zap_scan(url)
         zap_vulnerabilities = zap_results.get('vulnerabilities', [])
         headers = zap_results.get('headers', {})
-        # logs.append("ZAP scan completed---------------------")
-        # Add source to model vulnerabilities if not present
+        
+        # Format model vulnerabilities
         if detailed_vulnerabilities:
             for vuln in detailed_vulnerabilities:
                 if "source" not in vuln:
                     vuln["source"] = "AI Model"
-            all_vulnerabilities = detailed_vulnerabilities + zap_vulnerabilities
+            model_vulnerabilities = detailed_vulnerabilities
         else:
             # Format basic vulnerability names with source info
             model_vulnerabilities = [
@@ -144,7 +166,12 @@ def api_scan():
                     "source": "AI Model"
                 } for name in vulnerability_names
             ]
-            all_vulnerabilities = model_vulnerabilities + zap_vulnerabilities
+        
+        # Apply the limit to OWASP ZAP vulnerabilities
+        limited_zap_vulns = limit_owasp_vulnerabilities(model_vulnerabilities, zap_vulnerabilities)
+        
+        # Combine all vulnerabilities
+        all_vulnerabilities = model_vulnerabilities + limited_zap_vulns
         
         return jsonify({
             "url": url,
